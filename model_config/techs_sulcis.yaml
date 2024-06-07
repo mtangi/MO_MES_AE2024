@@ -1,0 +1,475 @@
+##
+# TECHNOLOGY DEFINITIONS
+##
+
+techs:
+
+## - ENERGY GRID - ##
+
+    supply_grid_power:
+        essentials:
+            name: 'National grid import'
+            color: '#dfccde'
+            parent: supply
+            carrier: electricity
+        constraints:
+            resource: inf
+            energy_cap_max: 2000000000
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                om_con: file=PUN.csv:SARD # energy price from the grid #ppt
+            emissions:
+                om_con: 0.26  #  average kgCO2/kWh for the national grid - based on ISPRA data for 2015
+            area:
+                interest_rate: 0.10
+                energy_cap: 0 # area_occupied/kW
+            PM_emissions:
+                om_con: 0
+            jobs:
+                interest_rate: 0.10
+                energy_cap: 0 # Jobs/kW  jobs for construction/installation and operation/maintanance
+            revenues:
+                om_con: 0 # energy price from the grid #ppt
+            indipendence:
+                om_con: file=PUN.csv:SARD # energy price from the grid #ppt
+                
+                
+# thermo-end
+
+##-RENEWABLES-##
+
+# pv-start
+    pv_existing:
+        essentials:
+            name: 'PV existing'
+            color: '#f7ca13'            # yellow
+            parent: supply_plus
+            carrier: electricity
+        constraints:
+            export_carrier: electricity  # uncomment if export is allowed
+            resource: file=pv_resource.csv:per_cap  # Already accounts for panel efficiency - per_area - per_cap
+            resource_unit: energy_per_cap  # energy_per_cap = kWh/kW; energy_per_area kWh/m2
+            #parasitic_eff: 0.85 # inverter losses
+            energy_cap_equals: 50000 # kW to be used if the tech is already installed
+            force_resource: false  # if false, curtailment is allowed
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                om_annual: 17
+                om_prod: 0
+            emissions:
+                om_prod: 0 # kgCO2/kWh
+            area:
+                interest_rate: 0.10
+                energy_cap: 0 # area_occupied/kW
+            PM_emissions:
+                om_con: 0
+            jobs:
+                interest_rate: 0.10
+                energy_cap: 0.00070  # Jobs/kW  jobs for construction/installation and operation/maintanance
+            revenues:
+                export: file=PUN.csv:SARD # energy price from the grid #ppt
+            indipendence:
+                om_con: 0
+            
+
+    pv_planned_ground:
+        essentials:
+            name: 'PV planned ground'
+            color: '#b2b400'            # yellow
+            parent: supply_plus
+            carrier: electricity
+        constraints:
+            export_carrier: electricity  # uncomment if export is allowed
+            resource: file=pv_resource.csv:per_cap  # Already accounts for panel efficiency - per_area - per_cap
+            resource_unit: energy_per_cap  # energy_per_cap = kWh/kW; energy_per_area kWh/m2
+            #parasitic_eff: 0.85 # inverter losses
+            #resource_area_max: 538642 # m2 available area for installing PV  (aree estrattive + seminativo non irriguo e coeff sfruttamento 0.2%)
+            energy_cap_max: 48968  # kW to be used if the capacity will be optimized
+            force_resource: false  # if false, curtailment is allowed
+            resource_area_per_energy_cap: 11 # m2 of area are needed to install 1 kWp of panels
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 774  # euro/kW  Source: IRENA 2019 media residenziale e commerciale per l'Italia
+                om_annual: 17
+                om_prod: 0
+            emissions:
+                om_prod: 0 # kgCO2/kWh
+            area:
+                interest_rate: 0.10      
+                energy_cap: 11 # area_occupied m2/kW
+            PM_emissions:
+                om_con: 0
+            jobs:
+                interest_rate: 0.10
+                energy_cap: 0.01370  # Jobs/kW  jobs for construction/installation and operation/maintanance
+            revenues:
+                export: file=PUN.csv:SARD # energy price from the grid #ppt
+            indipendence:
+                om_con: 0
+                
+    pv_planned_roof:
+        essentials:
+            name: 'PV planned roof'
+            color: '#dde000'            # yellow
+            parent: supply_plus
+            carrier: electricity
+        constraints:
+            export_carrier: electricity  # uncomment if export is allowed
+            resource: file=pv_resource.csv:per_cap  # Already accounts for panel efficiency - per_area - per_cap
+            resource_unit: energy_per_cap  # energy_per_cap = kWh/kW; energy_per_area kWh/m2
+            #parasitic_eff: 0.85 # inverter losses
+            resource_area_max: 926183 # m2 available area for installing PV (aree urbane e coeff sfruttamento 2%)
+            energy_cap_max: 185237 # kW to be used if the capacity will be optimized
+            force_resource: false  # if false, curtailment is allowed
+            resource_area_per_energy_cap: 5 # m2 of area are needed to install 1 kWp of panels
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                energy_cap: 1257  # euro/kW  Source: IRENA 2019 media residenziale e commerciale per l'Italia
+                om_annual: 17
+                om_prod: 0
+            emissions:
+                om_prod: 0 # kgCO2/kWh
+            area:
+                interest_rate: 0.10
+                energy_cap: 0 # area_occupied/kW
+            PM_emissions:
+                om_con: 0
+            jobs:
+                interest_rate: 0.10
+                energy_cap: 0.01370  # Jobs/kW  jobs for construction/installation and operation/maintanance
+            revenues:
+                export: file=PUN.csv:SARD # energy price from the grid #ppt
+            indipendence:
+                om_con: 0
+#pv-end
+
+# wind-start
+    wind_existing:
+        essentials:
+            name: 'Wind existing'
+            color: '#6783E3'            # ligth blue
+            parent: supply_plus
+            carrier: electricity
+        constraints:
+            export_carrier: electricity  # uncomment if export is allowed
+            resource: file=wind_resource.csv:onshore
+            resource_unit: energy_per_cap  # energy_per_cap = kWh/kW; energy_per_area kWh/m2
+            parasitic_eff: 0.85 # derating factor
+            energy_cap_equals: 92000 # kW to be used if the tech is already installed
+            force_resource: false # if false, curtailment is allowed
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                om_annual: 33
+                om_prod: 0
+            emissions:
+                om_prod: 0 # kgCO2/kWh
+            area:
+                interest_rate: 0.10
+                energy_cap: 0 # area_occupied/kW
+            PM_emissions:
+                om_con: 0
+            jobs:
+                interest_rate: 0.10
+                energy_cap: 0.00030  # Jobs/kW  jobs for construction/installation and operation/maintanance
+            revenues:
+                export: file=PUN.csv:SARD # energy price from the grid #ppt
+            indipendence:
+                om_con: 0
+
+    wind_planned_onshore:
+        essentials:
+            name: 'Wind planned onshore'
+            color: '#0083ff'            # ligth blue
+            parent: supply_plus
+            carrier: electricity
+        constraints:
+            export_carrier: electricity  # uncomment if export is allowed
+            resource: file=wind_resource.csv:onshore
+            resource_unit: energy_per_cap  # energy_per_cap = kWh/kW; energy_per_area kWh/m2
+            parasitic_eff: 0.85 # derating factor
+            energy_cap_max: 100000  # kW to be used if the capacity will be optimized
+            force_resource: false # if false, curtailment is allowed
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                om_annual: 33
+                energy_cap: 1402  # euro/kW Source: IRENA 2019
+                om_prod: 0
+            emissions:
+                om_prod: 0 # kgCO2/kWh
+            area:
+                interest_rate: 0.10
+                energy_cap: 0 # area_occupied/kW
+            PM_emissions:
+                om_con: 0
+            jobs:
+                interest_rate: 0.10
+                energy_cap: 0.00670  # Jobs/kW  jobs for construction/installation and operation/maintanance
+            revenues:
+                export: file=PUN.csv:SARD # energy price from the grid #ppt
+            indipendence:
+                om_con: 0
+
+    wind_planned_offshore:
+        essentials:
+            name: 'Wind planned offshore'
+            color: '#00e8ff'            # ligth blue
+            parent: supply_plus
+            carrier: electricity
+        constraints:
+            export_carrier: electricity  # uncomment if export is allowed
+            resource: file=wind_resource.csv:offshore
+            resource_unit: energy_per_cap  # energy_per_cap = kWh/kW; energy_per_area kWh/m2
+            parasitic_eff: 0.85 # derating factor
+            energy_cap_max: 100000  # kW to be used if the capacity will be optimized #TOBESET
+            force_resource: false # if false, curtailment is allowed
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                om_annual: 85
+                energy_cap: 2769  # euro/kW Source: IRENA 2019
+                om_prod: 0
+            emissions:
+                om_prod: 0 # kgCO2/kWh
+            area:
+                interest_rate: 0.10
+                energy_cap: 0 # area_occupied/kW
+            PM_emissions:
+                om_con: 0
+            jobs:
+                interest_rate: 0.10
+                energy_cap: 0.03220  # Jobs/kW  jobs for construction/installation and operation/maintanance
+            revenues:
+                export: file=PUN.csv:SARD # energy revenues from sales to the grid
+            indipendence:
+                om_con: 0
+# wind-end
+
+##-SUPPLY-##
+
+# supply_heat_start
+    supply_heat_oil:  #represent an equivalent plant used to produce heat (current situation)
+        essentials:
+            name: 'Oil heat supply'
+            color: '#3a3a47'  # grey (to be changed)
+            parent: supply
+            carrier_out: heat
+        constraints:
+            resource: inf  # Mixed of different fuels
+            energy_cap_max: 38000           # kW maximum demand satisfied using electricity in the current situation
+            energy_eff: 0.91                    # carrier conversion efficiency
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                om_annual: 5.9 # media centralizzate e autonome
+                om_con: 0.05    # Euro/kWh Fuel cost
+                energy_cap: 0
+            emissions:
+                om_con: 0.26  # kgCO2/kWh before applying the efficiency Source: ISPRA 2020
+            area:
+                interest_rate: 0.10
+                energy_cap: 0 # area_occupied/kW
+            PM_emissions:
+                om_con: 0.1223
+            jobs:
+                interest_rate: 0.10
+                energy_cap: 0.00014  # Jobs/kW  jobs for construction/installation and operation/maintanance
+            revenues:
+                export: 0
+            indipendence:
+                om_con: 0
+
+    supply_heat_gpl:  #represent an equivalent plant used to produce heat (current situation)
+        essentials:
+            name: 'GPL heat supply'
+            color: '#7b74e8'  # grey (to be changed)
+            parent: supply
+            carrier_out: heat
+        constraints:
+            resource: inf  # Mixed of different fuels
+            energy_cap_max: 40000           # kW maximum demand satisfied using electricity in the current situation
+            energy_eff: 0.95     # carrier conversion efficiency
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                om_annual: 3.6
+                om_con: 0.03    # Euro/kWh Fuel cost
+                energy_cap: 0
+            emissions:
+                om_con: 0.24  # kgCO2/kWh before applying the efficiency Source: MiTE
+            area:
+                interest_rate: 0.10
+                energy_cap: 0 # area_occupied/kW
+            PM_emissions:
+                om_con: 0.1223
+            jobs:
+                interest_rate: 0.10
+                energy_cap: 0.00014  # Jobs/kW  jobs for construction/installation and operation/maintanance
+            revenues:
+                export: 0
+            indipendence:
+                om_con: 0
+
+    supply_heat_solid:  #represent an equivalent plant used to produce heat (current situation)
+        essentials:
+            name: 'Solid heat supply'
+            color: '#b26912'  # grey (to be changed)
+            parent: supply
+            carrier_out: heat
+        constraints:
+            resource: inf  # Mixed of different fuels
+            energy_cap_max: 56000           # kW maximum demand satisfied using electricity in the current situation
+            energy_eff: 0.83   # carrier conversion efficiency (caldaia a pellet)
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                om_annual: 8.7 # media tra il costo delle stufe a legna e delle caldaie a pellet
+                om_con: 0.08   # Euro/kW Biomass cost 0.22 Euro/kg IVA esclusa
+                energy_cap: 0
+            emissions:
+                om_con: 0  # kgCO2/kWh before applying the efficiency Source: ISPRA 2020
+            area:
+                interest_rate: 0.10
+                energy_cap: 0 # area_occupied/kW
+            PM_emissions:
+                om_con: 0.6637
+            jobs:
+                interest_rate: 0.10
+                energy_cap: 0.00150  # Jobs/kW  jobs for construction/installation and operation/maintanance
+            revenues:
+                export: 0
+            indipendence:
+                om_con: 0
+
+    P2Heat_existing:  #represent an equivalent plant used to convert electricity to heat (current situation)
+        essentials:
+            name: 'Power to heat existing'
+            color: '#ff0000'  # grey (to be changed)
+            parent: conversion
+            carrier_in: electricity
+            carrier_out: heat
+        constraints:
+            energy_eff: 3.2                    # carrier conversion efficiency
+            energy_cap_equals: 44000           # kW maximum demand satisfied using electricity in the current situation
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                om_annual: 30
+                energy_cap: 0
+            emissions:
+                om_con: 0  # kgCO2/kWh CO2 emissions depend on the electricity generation mix
+            area:
+                interest_rate: 0.10
+                energy_cap: 0 # area_occupied/kW
+            PM_emissions:
+                om_con: 0
+            jobs:
+                interest_rate: 0.10
+                energy_cap: 0.0007  # Jobs/kW  jobs for construction/installation and operation/maintanance
+            revenues:
+                export: 0
+            indipendence:
+                om_con: 0
+
+    P2Heat_planned:  #represent an equivalent plant used to convert electricity to heat (planning)
+        essentials:
+            name: 'Power to heat planned'
+            color: '#ff9b9b'  # grey (to be changed)
+            parent: conversion
+            carrier_in: electricity
+            carrier_out: heat
+        constraints:
+            energy_eff: 4                    # carrier conversion efficiency
+            energy_cap_max: 178000  # kW to be used if the capacity will be optimized (l'intera domanda di calore verrebbe soddisfatta da questa tech)
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                om_annual: 32
+                energy_cap: 1268   # Euro/kW Pompe di calore aria-aqua (media tra autonomo e centralizzato con e senza intervento per riscaldamento a pavimento)
+            emissions:
+                om_con: 0  # kgCO2/kWh
+            area:
+                interest_rate: 0.10
+                energy_cap: 0 # area_occupied/kW
+            PM_emissions:
+                om_con: 0
+            jobs:
+                interest_rate: 0.10
+                energy_cap: 0.01370  # Jobs/kW  jobs for construction/installation and operation/maintanance
+            revenues:
+                export: 0
+            indipendence:
+                om_con: 0
+# supply_heat_end
+
+##-STORAGE-##
+
+# battery-start
+    battery:
+        essentials:
+            name: 'Electricity storage'
+            color: '#bb0db3'  # colore  56c7e6
+            parent: storage
+            carrier: electricity
+        constraints:
+            energy_cap_max: 20000 #kW
+            energy_eff: 0.85
+            storage_cap_max: 200000 #kWh
+            lifetime: 25
+        costs:
+            monetary:
+                interest_rate: 0.10
+                storage_cap: 500   # euro per kWh   costo installazione
+                om_prod: 0.023
+                #om_annual: 10
+            emissions:
+                om_prod: 0  # kgCO2/kWh
+            area:
+                interest_rate: 0.10
+                storage_cap: 0 # area_occupied/kW
+            PM_emissions:
+                om_prod: 0
+            jobs:
+                interest_rate: 0.10
+                storage_cap: 0.01370  # Jobs/kW  jobs for construction/installation and operation/maintanance
+            revenues:
+                export: 0
+            indipendence:
+                om_prod: 0
+# battery_end
+
+##-DEMAND-##
+
+# demand-start
+    demand_electricity:
+        essentials:
+            name: 'Electricity demand'
+            color: '#072486'            # blue
+            parent: demand
+            carrier: electricity
+
+    demand_heat:
+        essentials:
+            name: 'Heat demand'
+            color: '#660507'            # red
+            parent: demand
+            carrier: heat
+# demand-end
+

@@ -1,0 +1,30 @@
+import:  # Import other files from paths relative to this file, or absolute paths
+    - '../model_config/techs_sulcis.yaml'
+    - '../model_config/locations_sulcis.yaml'
+
+model:
+    name: test
+
+    # What version of Calliope this model is intended for
+    calliope_version: 0.6.8
+
+    # Time series data path - can either be a path relative to this file, or an absolute path
+    timeseries_data_path: 'timeseries_data_average'
+
+    subset_time: ['2015-01-01', '2015-12-31']  # Subset of timesteps ['2005-07-01', '2005-07-02']
+
+run:
+    mode: plan  # Choices: plan, operate
+    # operation:  # da commentare se plan
+    #     window: 24
+    #     horizon: 48
+
+    solver: cbc
+
+    ensure_feasibility: true # Switching on unmet demand
+
+    bigM: 1e6 # setting the scale of unmet demand, which cannot be too high, otherwise the optimisation will not converge
+    objective_options:
+        cost_class: {'monetary': 1, 'emissions': 0, 'revenues': -1, 'indipendence': 0, 'area':0, 'PM_emissions':0, 'jobs':-0 } 
+        # {'monetary': 1, 'emissions': 0.0, 'area':0, 'PM_emissions':0, 'jobs':-0 , 'revenues': -1} 
+        # 25 Euro/t (2019), 50 Euro/t (2020), 100 Euro/ton (Future), 200 Euro/ton (Future)

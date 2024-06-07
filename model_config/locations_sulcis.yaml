@@ -1,0 +1,26 @@
+locations:
+    # X1-start
+    X1:
+        techs:
+            supply_grid_power:
+            pv_existing:
+            pv_planned_roof:
+            pv_planned_ground:
+            wind_existing:
+            wind_planned_onshore:
+            wind_planned_offshore:
+            supply_heat_oil:
+            supply_heat_gpl:
+            supply_heat_solid:
+            P2Heat_existing:
+            P2Heat_planned:
+            battery:
+
+            demand_electricity:
+                constraints.resource: file=demand_power.csv
+            demand_heat:
+                constraints.resource: file=demand_heat.csv:total
+
+        #available_area: 14000
+        coordinates: {x: 2, y: 6}
+    # X1-end
